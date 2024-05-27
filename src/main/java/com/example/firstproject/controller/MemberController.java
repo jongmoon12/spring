@@ -20,15 +20,14 @@ public class MemberController {
     @Autowired
     private MemberRepository memberRepository;
 
-//    @GetMapping("/members/new")
+    //    @GetMapping("/members/new")
 //    public String newMemberForm() {
 //        return "members/new";
 //    }
     @GetMapping("/join")
-    public String signUpPage(){
+    public String signUpPage() {
         return "members/new";
     }
-
 
 
     @PostMapping("/join")
@@ -43,20 +42,29 @@ public class MemberController {
         // 2. 리파지터리로 엔티티를 DB에 저장
         Member saved = memberRepository.save(member);
         log.info(saved.toString());
-        return "";
+        return "redirect:/members/" + saved.getID();
     }
 
     @GetMapping("/members/{id}")
-    public String show(@PathVariable Long id, Model model){
+    public String show(@PathVariable Long id, Model model) {
+        log.info("id " + id);
         Member member = memberRepository.findById(id).orElse(null);
         model.addAttribute("member", member);
         return "members/show";
     }
+
     @GetMapping("/members")
-    public String index(Model model){
+    public String index(Model model) {
         ArrayList<Member> memberEntityList = memberRepository.findAll();
         model.addAttribute("members", memberEntityList);
         return "members/index";
     }
 
+    @GetMapping("members/{id}/edit")
+    public String edit(@PathVariable Long id, Model model) {
+        Member member = memberRepository.findById(id).orElse(null);
+        model.addAttribute("member", member);
+        return "members/edit";
+
+    }
 }
